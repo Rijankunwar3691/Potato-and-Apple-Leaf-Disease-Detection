@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
   final Future<FirebaseApp> _firebaseinitialzationized = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       
         title: 'Flutter Demo',
