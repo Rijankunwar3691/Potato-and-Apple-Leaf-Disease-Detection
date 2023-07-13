@@ -1,4 +1,4 @@
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,8 +16,7 @@ class ImageSection extends SliverFixedExtentList {
                         width: 300.0,
                         decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
-                          color:kSpiritedGreen,
-                          borderRadius: BorderRadius.circular((20)),
+                          color: kSpiritedGreen,
                         ),
                         child: Center(
                           child: image == null
@@ -27,18 +26,15 @@ class ImageSection extends SliverFixedExtentList {
                                 )
                               : Image.file(
                                   image!,
-                                  width: 400,
-                                  height: 300,
+                                  height: 300.0,
+                                  width: 300.0,
                                   fit: BoxFit.cover,
-                                  
                                 ),
-                                
                         ),
                       )),
                 );
               },
               childCount: 1,
             ),
-             
             itemExtent: 200);
 }

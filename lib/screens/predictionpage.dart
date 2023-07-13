@@ -1,3 +1,4 @@
+import 'package:cropssafe/consts/constants.dart';
 import 'package:flutter/material.dart';
 
 class PredictionPage extends StatelessWidget {
@@ -9,6 +10,7 @@ class PredictionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kSpiritedGreen,
       body: Text(predictionclass + "  " + confidence.toString()),
     );
   }

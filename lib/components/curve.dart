@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 
 class ImageClipper extends CustomClipper<Path> {
   @override

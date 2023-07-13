@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 import 'package:cropssafe/screens/landingpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

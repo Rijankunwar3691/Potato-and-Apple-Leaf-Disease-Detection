@@ -7,41 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853741428946:android:8b1affa6ccf28f648a8d0b",
+        "mobilesdk_app_id": "1:853741428946:android:8e247a6da7a21aa68a8d0b",
         "android_client_info": {
           "package_name": "com.example.cropssafe"
         }
       },
       "oauth_client": [
         {
-          "client_id": "853741428946-g4flocg0spi13cn4vffi45novgfdv6er.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCkVC9eJY_6WRIwqzHTlAnoPyZQ-N2OoNs"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "853741428946-g4flocg0spi13cn4vffi45novgfdv6er.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:853741428946:android:9fc4dda5ce5c098b8a8d0b",
-        "android_client_info": {
-          "package_name": "com.example.flutter_application1"
-        }
-      },
-      "oauth_client": [
+          "client_id": "853741428946-l0s7q2lhtkef8eh86cokijomdog8fc9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cropssafe",
+            "certificate_hash": "2bb9d3cebec14fd9630e2e03f6d7fe9ec4f192d9"
+          }
+        },
         {
           "client_id": "853741428946-g4flocg0spi13cn4vffi45novgfdv6er.apps.googleusercontent.com",
           "client_type": 3

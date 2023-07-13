@@ -1,3 +1,5 @@
+import 'package:cropssafe/components/btm_bar.dart';
+import 'package:cropssafe/inner_screens/privacy.dart';
 import 'package:cropssafe/screens/login_screen.dart';
 import 'package:cropssafe/screens/signup_screen.dart';
 import 'package:cropssafe/screens/splash_screen.dart';
@@ -7,38 +9,59 @@ import 'package:flutter/material.dart';
 import 'screens/homepage.dart';
 
 void main() {
-  runApp( MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
- // final Future<FirebaseApp> _firebaseinitialzationized = Firebase.initializeApp();
+  final Future<FirebaseApp> _firebaseinitialzationized =
+      Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          primarySwatch: Colors.blue,
-        ),
-        home: Splashscreen(),
-        routes: {
-          LoginScreen.id: (context) => const LoginScreen(),
-          SignupScreen.id: (context) => const SignupScreen(),
+    return FutureBuilder(
+        future: _firebaseinitialzationized,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const MaterialApp(
+              home: Scaffold(
+                  body: Center(
+                child: CircularProgressIndicator(),
+              )),
+            );
+          } else if (snapshot.hasError) {
+            const MaterialApp(
+              home: Scaffold(
+                  body: Center(
+                child: Text('An error occured'),
+              )),
+            );
+          }
+          return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                // This is the theme of your application.
+                //
+                // Try running your application with "flutter run". You'll see the
+                // application has a blue toolbar. Then, without quitting the app, try
+                // changing the primarySwatch below to Colors.green and then invoke
+                // "hot reload" (press "r" in the console where you ran "flutter run",
+                // or simply save your changes to "hot reload" in a Flutter IDE).
+                // Notice that the counter didn't reset back to zero; the application
+                // is not restarted.
+                primarySwatch: Colors.blue,
+              ),
+              home:Splashscreen(),
+              routes: {
+                LoginScreen.id: (context) => const LoginScreen(),
+                SignupScreen.id: (context) => const SignupScreen(),
 
-          // ignore: equal_keys_in_map
-          Home_page.id: (context) => Home_page()
+                // ignore: equal_keys_in_map
+                Home_page.id: (context) => Home_page()
+              });
         });
   }
 }

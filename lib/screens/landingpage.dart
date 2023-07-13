@@ -1,5 +1,6 @@
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 import 'package:cropssafe/screens/login_screen.dart';
+import 'package:cropssafe/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onboarding/onboarding.dart';
@@ -232,7 +233,7 @@ class _Landing_pageState extends State<Landing_page> {
            Navigator.pushReplacement(context,
                                     MaterialPageRoute(
                                   builder: (context) {
-                                    return LoginScreen();
+                                    return SignupScreen();
                                     }));
         },
         child: const Padding(

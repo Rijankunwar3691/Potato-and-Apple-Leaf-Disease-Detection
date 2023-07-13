@@ -1,4 +1,4 @@
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     required this.keyboardType,
     required this.onChanged,
+    
     Key? key,
   }) : super(key: key);
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
 
 class AuthenticationButton extends StatelessWidget {
   const AuthenticationButton({

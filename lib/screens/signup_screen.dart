@@ -1,131 +1,388 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cropssafe/components/authentication_button.dart';
-import 'package:cropssafe/components/custom_text_field.dart';
-import 'package:cropssafe/constants.dart';
+import 'package:cropssafe/consts/constants.dart';
+import 'package:cropssafe/inner_screens/loading_manager.dart';
+import 'package:cropssafe/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignupScreen extends StatelessWidget {
+import '../components/btm_bar.dart';
+import '../consts/firebase_consts.dart';
+import '../consts/global_methods.dart';
+
+class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
   static String id = 'SignupScreen';
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _fullNameController = TextEditingController();
+
+  final _emailTextController = TextEditingController();
+
+  final _passTextController = TextEditingController();
+
+  final _addressTextController = TextEditingController();
+
+  final _passFocusNode = FocusNode();
+
+  final _emailFocusNode = FocusNode();
+
+  final _addressFocusNode = FocusNode();
+
+  bool _obscureText = true;
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailTextController.dispose();
+    _passTextController.dispose();
+
+    _emailFocusNode.dispose();
+    _passFocusNode.dispose();
+
+    super.dispose();
+  }
+
+  bool _isLoading = false;
+
+  void _submitFormOnRegister() async {
+    final isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isLoading = true;
+    });
+    if (isValid) {
+      _formKey.currentState!.save();
+
+      try {
+        await authInstance.createUserWithEmailAndPassword(
+            email: _emailTextController.text.toLowerCase().trim(),
+            password: _passTextController.text.trim());
+        final User? user = authInstance.currentUser;
+        final uid = user!.uid;
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'id': uid,
+          'name': _fullNameController.text,
+          'email': _emailTextController.text.toLowerCase(),
+        });
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => BottomBarScreen()));
+        print('Succefully registered');
+      } on FirebaseException catch (error) {
+        GlobalMethods.errorDialog(
+            subtitle: '${error.message}', context: context);
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (error) {
+        GlobalMethods.errorDialog(subtitle: '$error', context: context);
+        setState(() {
+          _isLoading = false;
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
-      child: Stack(
-        children: [
-          Scaffold(
-            body: SafeArea(
-              bottom: false,
-              child: SingleChildScrollView(
+      child: LoadingManager(
+        isLoading: _isLoading,
+        child: Stack(
+          children: [
+            Scaffold(
+              body: SingleChildScrollView(
                 child: Container(
                   color: kSpiritedGreen,
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.9,
+                    maxHeight: MediaQuery.of(context).size.height,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Register',
-                            style: GoogleFonts.poppins(
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.w600,
-                              color: kDarkGreenColor,
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Register',
+                              style: GoogleFonts.poppins(
+                                fontSize: 32.0,
+                                fontWeight: FontWeight.w600,
+                                color: kDarkGreenColor,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10.0),
-                          Text(
-                            'Create a new account',
-                            style: GoogleFonts.poppins(
-                              color: kGreyColor,
-                              fontSize: 16.0,
+                            const SizedBox(height: 10.0),
+                            Text(
+                              'Create a new account',
+                              style: GoogleFonts.poppins(
+                                color: kGreyColor,
+                                fontSize: 16.0,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 40.0),
-                          CustomTextField(
-                            hintText: 'Full Name',
-                            icon: Icons.person,
-                            keyboardType: TextInputType.name,
-                            onChanged: (value) {},
-                          ),
-                          CustomTextField(
-                            hintText: 'Email',
-                            icon: Icons.mail,
-                            keyboardType: TextInputType.name,
-                            onChanged: (value) {},
-                          ),
-                          CustomTextField(
-                            hintText: 'Password',
-                            icon: Icons.lock,
-                            keyboardType: TextInputType.name,
-                            onChanged: (value) {},
-                          ),
-                          CustomTextField(
-                            hintText: 'Confirm Password',
-                            icon: Icons.lock,
-                            keyboardType: TextInputType.name,
-                            onChanged: (value) {},
-                          ),
-                          const SizedBox(height: 15.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'By signing you agree to our ',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
+                            const SizedBox(height: 40.0),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, bottom: 15.0),
+                              child: TextFormField(
+                                textInputAction: TextInputAction.next,
+                                onEditingComplete: () => FocusScope.of(context)
+                                    .requestFocus(_emailFocusNode),
+                                keyboardType: TextInputType.name,
+                                cursorColor: kDarkGreenColor,
+                                controller: _fullNameController,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "This Field is missing";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                style: GoogleFonts.poppins(
                                   color: kDarkGreenColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18.0),
+                                  filled: true,
+                                  fillColor: kGinColor,
+                                  prefixIcon: Icon(
+                                    Icons.person,
+                                    size: 24.0,
+                                    color: kDarkGreenColor,
+                                  ),
+                                  hintText: 'Full Name',
+                                  hintStyle: GoogleFonts.poppins(
+                                    color: kDarkGreenColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(color: kGinColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide:
+                                        BorderSide(color: kDarkGreenColor),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                ' Terms of use',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
-                                  color: kGreyColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'and ',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, bottom: 15.0),
+                              child: TextFormField(
+                                focusNode: _emailFocusNode,
+                                textInputAction: TextInputAction.next,
+                                onEditingComplete: () => FocusScope.of(context)
+                                    .requestFocus(_passFocusNode),
+                                keyboardType: TextInputType.emailAddress,
+                                controller: _emailTextController,
+                                validator: (value) {
+                                  if (value!.isEmpty || !value.contains("@")) {
+                                    return "Please enter a valid Email adress";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                style: GoogleFonts.poppins(
                                   color: kDarkGreenColor,
-                                ),
-                              ),
-                              Text(
-                                ' privacy notice',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w600,
-                                  color: kGreyColor,
+                                  fontSize: 15.0,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18.0),
+                                  filled: true,
+                                  fillColor: kGinColor,
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    size: 24.0,
+                                    color: kDarkGreenColor,
+                                  ),
+                                  hintText: 'Email',
+                                  hintStyle: GoogleFonts.poppins(
+                                    color: kDarkGreenColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(color: kGinColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide:
+                                        BorderSide(color: kDarkGreenColor),
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, bottom: 15.0),
+                              child: TextFormField(
+                                focusNode: _passFocusNode,
+                                obscureText: _obscureText,
+                                keyboardType: TextInputType.visiblePassword,
+                                controller: _passTextController,
+                                validator: (value) {
+                                  if (value!.isEmpty || value.length < 7) {
+                                    return "Please enter a valid password";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onEditingComplete: () => FocusScope.of(context)
+                                    .requestFocus(_addressFocusNode),
+                                style: GoogleFonts.poppins(
+                                  color: kDarkGreenColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18.0),
+                                  filled: true,
+                                  fillColor: kGinColor,
+                                  prefixIcon: Icon(
+                                    Icons.password,
+                                    size: 24.0,
+                                    color: kDarkGreenColor,
+                                  ),
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                    child: Icon(
+                                      _obscureText
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: kDarkGreenColor,
+                                    ),
+                                  ),
+                                  hintText: 'Password',
+                                  hintStyle: GoogleFonts.poppins(
+                                    color: kDarkGreenColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(color: kGinColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide:
+                                        BorderSide(color: kDarkGreenColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'By signing you agree to our ',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kDarkGreenColor,
+                                  ),
+                                ),
+                                Text(
+                                  ' Terms of use',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kGreyColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'and ',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kDarkGreenColor,
+                                  ),
+                                ),
+                                Text(
+                                  ' privacy notice',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kGreyColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Do you already have an account? ',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kDarkGreenColor,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginScreen()));
+                                  },
+                                  child: Text(
+                                    ' Login',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    
                       Padding(
                         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                         child: AuthenticationButton(
                           label: 'Sign Up',
-                          onPressed: () {},
+                          onPressed: () {
+                            _submitFormOnRegister();
+                          },
                         ),
                       ),
                     ],
@@ -133,26 +390,26 @@ class SignupScreen extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 30.0,
-            left: 20.0,
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              radius: 20.0,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: kDarkGreenColor,
-                  size: 24.0,
+            Positioned(
+              top: 30.0,
+              left: 20.0,
+              child: CircleAvatar(
+                backgroundColor: Colors.grey.shade300,
+                radius: 20.0,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: kDarkGreenColor,
+                    size: 24.0,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
