@@ -5,6 +5,7 @@ import 'package:cropssafe/inner_screens/loading_manager.dart';
 import 'package:cropssafe/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../components/btm_bar.dart';
@@ -29,13 +30,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final _passTextController = TextEditingController();
 
-  final _addressTextController = TextEditingController();
-
   final _passFocusNode = FocusNode();
-
+  final _addressFousNode = FocusNode();
   final _emailFocusNode = FocusNode();
-
-  final _addressFocusNode = FocusNode();
 
   bool _obscureText = true;
 
@@ -44,7 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _fullNameController.dispose();
     _emailTextController.dispose();
     _passTextController.dispose();
-
+    _addressFousNode.dispose();
     _emailFocusNode.dispose();
     _passFocusNode.dispose();
 
@@ -56,16 +53,25 @@ class _SignupScreenState extends State<SignupScreen> {
   void _submitFormOnRegister() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isLoading = true;
-    });
+
     if (isValid) {
       _formKey.currentState!.save();
-
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await authInstance.createUserWithEmailAndPassword(
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
+        Fluttertoast.showToast(
+          msg: "An email has been sent to your email address",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey.shade600,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
         final User? user = authInstance.currentUser;
         final uid = user!.uid;
         await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -73,6 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
           'name': _fullNameController.text,
           'email': _emailTextController.text.toLowerCase(),
         });
+
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => BottomBarScreen()));
         print('Succefully registered');
@@ -248,8 +255,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                     return null;
                                   }
                                 },
-                                onEditingComplete: () => FocusScope.of(context)
-                                    .requestFocus(_addressFocusNode),
+                                onEditingComplete: () =>
+                                    {_submitFormOnRegister()},
                                 style: GoogleFonts.poppins(
                                   color: kDarkGreenColor,
                                   fontWeight: FontWeight.w600,
@@ -342,37 +349,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Do you already have an account? ',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600,
-                                    color: kDarkGreenColor,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LoginScreen()));
-                                  },
-                                  child: Text(
-                                    ' Login',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
@@ -385,6 +361,35 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Already have an account ?',
+                              style: TextStyle(
+                                  fontSize: 14.0, fontWeight: FontWeight.w600),
+                            ),
+                            TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all(kDarkGreenColor),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                              },
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

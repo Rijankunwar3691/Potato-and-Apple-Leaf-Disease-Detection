@@ -17,7 +17,7 @@ class AuthenticationButton extends StatelessWidget {
     return ElevatedButton(
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: 12.0),
+          const EdgeInsets.symmetric(vertical: 1.0),
         ),
         backgroundColor: MaterialStateProperty.all(kDarkGreenColor),
         shape: MaterialStateProperty.all(RoundedRectangleBorder(

@@ -1,6 +1,8 @@
 import 'package:cropssafe/components/authentication_button.dart';
 import 'package:cropssafe/components/curve.dart';
 import 'package:cropssafe/consts/constants.dart';
+import 'package:cropssafe/inner_screens/forgot_password.dart';
+import 'package:cropssafe/components/google_button.dart';
 import 'package:cropssafe/inner_screens/loading_manager.dart';
 import 'package:cropssafe/screens/landingpage.dart';
 import 'package:cropssafe/screens/signup_screen.dart';
@@ -44,12 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submitFormOnLogin() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isLoading = true;
-    });
+
     if (isValid) {
       _formKey.currentState!.save();
-
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await authInstance.signInWithEmailAndPassword(
             email: _emailTextController.text.toLowerCase().trim(),
@@ -295,7 +297,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ],
                                     ),
                                     TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ForgetPasswordScreen()));
+                                      },
                                       style: ButtonStyle(
                                         foregroundColor:
                                             MaterialStateProperty.all(
@@ -327,6 +334,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {
                                     _submitFormOnLogin();
                                   }),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              GoogleButton(),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: Row(
