@@ -26,6 +26,7 @@ class _SplashscreenState extends State<Splashscreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+  
       body: Container(
         color: kSpiritedGreen,
         child: Stack(

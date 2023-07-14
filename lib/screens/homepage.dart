@@ -72,7 +72,10 @@ class _Home_pageState extends State<Home_page> {
           context,
           MaterialPageRoute(
             builder: (context) => PredictionPage(
-                predictionclass: predictedClass, confidence: confidence),
+              predictionclass: predictedClass,
+              confidence: confidence,
+            
+            ),
           ));
       _response = null; // Reset the response when a new image is selected
       setState(() {

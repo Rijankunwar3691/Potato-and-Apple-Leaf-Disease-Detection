@@ -30,6 +30,7 @@ class _wetherState extends State<wether> {
   String head = "";
 
   int count = 0;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -266,7 +267,7 @@ class _wetherState extends State<wether> {
         moist.subColor = '${normalText}';
         head = moist.subText;
         print(head);
-        // if (firsttime) {
+        // if (firsttime!) {
         //   print("Moisture: " + head);
         //   if (head == "Critically Low Soil Moisture") {
         //     NotificationService().instantNotification(

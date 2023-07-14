@@ -1,6 +1,5 @@
-import 'package:cropssafe/components/btm_bar.dart';
-import 'package:cropssafe/inner_screens/privacy.dart';
 import 'package:cropssafe/screens/login_screen.dart';
+import 'package:cropssafe/screens/predictionpage.dart';
 import 'package:cropssafe/screens/signup_screen.dart';
 import 'package:cropssafe/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const MaterialApp(
+              debugShowCheckedModeBanner: false,
               home: Scaffold(
                   body: Center(
                 child: CircularProgressIndicator(),
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
                 // is not restarted.
                 primarySwatch: Colors.blue,
               ),
-              home:Splashscreen(),
+              home: PredictionPage(confidence: 0.55,predictionclass: 'amod',),
               routes: {
                 LoginScreen.id: (context) => const LoginScreen(),
                 SignupScreen.id: (context) => const SignupScreen(),
