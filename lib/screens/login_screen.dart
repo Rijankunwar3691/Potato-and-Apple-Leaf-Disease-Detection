@@ -1,14 +1,15 @@
 import 'package:cropssafe/components/authentication_button.dart';
 import 'package:cropssafe/components/curve.dart';
+import 'package:cropssafe/components/google_button.dart';
 import 'package:cropssafe/consts/constants.dart';
 import 'package:cropssafe/inner_screens/forgot_password.dart';
-import 'package:cropssafe/components/google_button.dart';
 import 'package:cropssafe/inner_screens/loading_manager.dart';
 import 'package:cropssafe/screens/landingpage.dart';
 import 'package:cropssafe/screens/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../components/btm_bar.dart';
@@ -41,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  bool _obscureText = true;
+
   bool _isLoading = false;
 
   void _submitFormOnLogin() async {
@@ -56,6 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
         await authInstance.signInWithEmailAndPassword(
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
+        Fluttertoast.showToast(
+          msg: "Successfully logged in ",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey.shade600,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => BottomBarScreen()));
         print('Succefully registered');
@@ -219,22 +231,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0, bottom: 15.0),
                                 child: TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  cursorColor: kDarkGreenColor,
-                                  onChanged: (value) => password = value,
-                                  onEditingComplete: () {
-                                    _submitFormOnLogin();
-                                  },
+                                  focusNode: _passFocusNode,
+                                  obscureText: _obscureText,
                                   keyboardType: TextInputType.visiblePassword,
                                   controller: _passTextController,
-                                  focusNode: _passFocusNode,
                                   validator: (value) {
                                     if (value!.isEmpty || value.length < 7) {
-                                      return 'Please enter a valid password';
+                                      return "Please enter a valid password";
                                     } else {
                                       return null;
                                     }
                                   },
+                                  onEditingComplete: () =>
+                                      {_submitFormOnLogin()},
                                   style: GoogleFonts.poppins(
                                     color: kDarkGreenColor,
                                     fontWeight: FontWeight.w600,
@@ -245,9 +254,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                     filled: true,
                                     fillColor: kGinColor,
                                     prefixIcon: Icon(
-                                      Icons.lock,
+                                      Icons.password,
                                       size: 24.0,
                                       color: kDarkGreenColor,
+                                    ),
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _obscureText = !_obscureText;
+                                        });
+                                      },
+                                      child: Icon(
+                                        _obscureText
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: kDarkGreenColor,
+                                      ),
                                     ),
                                     hintText: 'Password',
                                     hintStyle: GoogleFonts.poppins(

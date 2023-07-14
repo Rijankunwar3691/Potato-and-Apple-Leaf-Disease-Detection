@@ -35,221 +35,127 @@ class _wetherState extends State<wether> {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Container(
-          height: MediaQuery.of(context).size.height,
-          color: kSpiritedGreen,
-          child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: StreamBuilder(
-                  stream: Stream.periodic(Duration(seconds: 5)).asyncMap((i) =>
-                      _fetchData()), // i is null here (check periodic docs)
+        height: MediaQuery.of(context).size.height,
+        color: kSpiritedGreen,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: StreamBuilder(
+            stream: Stream.periodic(Duration(seconds: 5)).asyncMap(
+                (i) => _fetchData()), // i is null here (check periodic docs)
 
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('We got an Error ${snapshot.error}');
-                    }
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Center(
-                          child: Container(
-                            child: Theme(
-                              data: ThemeData.light(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 300),
-                                child: CupertinoActivityIndicator(
-                                  animating: true,
-                                  radius: 20,
-                                ),
-                              ),
-                            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('We got an Error ${snapshot.error}');
+              }
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Center(
+                    child: Container(
+                      child: Theme(
+                        data: ThemeData.light(),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 300),
+                          child: CupertinoActivityIndicator(
+                            animating: true,
+                            radius: 20,
                           ),
-                        );
+                        ),
+                      ),
+                    ),
+                  );
 
-                      case ConnectionState.none:
-                        return Text('oops no data');
+                case ConnectionState.none:
+                  return Text('oops no data');
 
-                      case ConnectionState.done:
-                        return Text('We are Done');
-                      default:
-                        return Column(children: [
-                          // Padding(
-                          //   padding: EdgeInsets.fromLTRB((13), 0, (13), (20)),
-                          //   child: Container(
-                          //     decoration: BoxDecoration(
-                          //       color: kMain,
-                          //       borderRadius: BorderRadius.only(
-                          //           bottomLeft: Radius.circular((10)),
-                          //           bottomRight: Radius.circular((10))),
-                          //     ),
-                          //     child: Padding(
-                          //       padding: EdgeInsets.fromLTRB(
-                          //           (0.092 * 0.2), 90, 0, (0.092 * 0.4)),
-                          //       child: Column(
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         crossAxisAlignment: CrossAxisAlignment.start,
-                          //         children: [
-                          //           Align(
-                          //             alignment: Alignment.center,
-                          //             child: Text(
-                          //               'Crops Safe',
-                          //               style: GoogleFonts.sail(
-                          //                   fontSize: 50,
-                          //                   color: kDarkGreenColor),
-                          //               textAlign: TextAlign.center,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          SizedBox(
-                            height: 5,
+                case ConnectionState.done:
+                  return Text('We are Done');
+                default:
+                  return Column(children: [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    PlantHealth(
+                      temp: temp,
+                      humid: humid,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, top: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Classified Disease',
+                            style: TextStyle(fontSize: 24),
                           ),
-                          PlantHealth(
-                            temp: temp,
-                            humid: humid,
+                        ],
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          FeedsWidget(
+                            pimage: 'assets/black.jpg',
+                            name: 'Apple Black Rot',
+                            onpressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AppleBlack()));
+                            },
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Classified Disease',
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                              ],
-                            ),
+                          FeedsWidget(
+                            onpressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AppleCedarRust()));
+                            },
+                            pimage: 'assets/cedar.jpg',
+                            name: 'Apple Cedar Rust',
                           ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                FeedsWidget(
-                                  pimage: 'assets/black.jpg',
-                                  name: 'Apple Black Rot',
-                                  onpressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AppleBlack()));
-                                  },
-                                ),
-                                FeedsWidget(
-                                  onpressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AppleCedarRust()));
-                                  },
-                                  pimage: 'assets/cedar.jpg',
-                                  name: 'Apple Cedar Rust',
-                                ),
-                                FeedsWidget(
-                                  onpressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => AppleScab()));
-                                  },
-                                  pimage: 'assets/scab.jpg',
-                                  name: 'Apple Scab',
-                                ),
-                                FeedsWidget(
-                                    onpressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) => Healthy()));
-                                    },
-                                    pimage: 'assets/health.png',
-                                    name: 'Healthy'),
-                                FeedsWidget(
-                                  onpressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PotatoEarlyBlight()));
-                                  },
-                                  pimage: 'assets/16.jpg',
-                                  name: 'Potato Early Blight',
-                                ),
-                                FeedsWidget(
-                                  onpressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PotatoLateBlight()));
-                                  },
-                                  pimage: 'assets/17.jpg',
-                                  name: 'Potato Late Blight',
-                                ),
-                              ],
-                            ),
+                          FeedsWidget(
+                            onpressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AppleScab()));
+                            },
+                            pimage: 'assets/scab.jpg',
+                            name: 'Apple Scab',
                           ),
-                          SizedBox(
-                            height: 10,
+                          FeedsWidget(
+                              onpressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Healthy()));
+                              },
+                              pimage: 'assets/health.png',
+                              name: 'Healthy'),
+                          FeedsWidget(
+                            onpressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PotatoEarlyBlight()));
+                            },
+                            pimage: 'assets/16.jpg',
+                            name: 'Potato Early Blight',
                           ),
-                          MoistureView(
-                            moist: moist,
+                          FeedsWidget(
+                            onpressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PotatoLateBlight()));
+                            },
+                            pimage: 'assets/17.jpg',
+                            name: 'Potato Late Blight',
                           ),
-                          // SingleChildScrollView(
-                          //   scrollDirection: Axis.horizontal,
-                          //   child: Padding(
-                          //     padding: EdgeInsets.only(
-                          //         left: 24, right: 24, top: 16, bottom: 18),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //       children: [
-                          //         Padding(
-                          //           padding: const EdgeInsets.all(8.0),
-                          //           child: GestureDetector(
-                          //             onTap: (){},
-                          //             child: Container(
-                          //               height: 200,
-                          //               width: 200,
-                          //               decoration: BoxDecoration(
-                          //                 borderRadius: BorderRadius.circular(10.0),
-                          //                 color: Theme.of(context).cardColor,
-                          //               ),
-                          //               child: Column(
-                          //                 children: [
-                          //                   Padding(
-                          //                     padding: const EdgeInsets.all(10.0),
-                          //                     child: ClipRRect(
-                          //                       borderRadius:
-                          //                           BorderRadius.circular(12),
-                          //                       child: Container(
-                          //                         height: size.height * 0.2,
-                          //                         width: double.infinity,
-                          //                         child: Image.asset(
-                          //                           'assets/black.jpg', // replace with your image asset path
-                          //                           fit: BoxFit
-                          //                               .cover, // adjust the image fit as per your requirement
-                          //                         ),
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //         Container(
-                          //           height: 200,
-                          //           color: Colors.red,
-                          //           width: 200,
-                          //         ),
-                          //         Container(
-                          //           height: 200,
-                          //           color: Colors.red,
-                          //           width: 200,
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // )
-                        ]);
-                    }
-                  }))),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    MoistureView(
+                      moist: moist,
+                    ),
+                  ]);
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -333,8 +239,7 @@ class _wetherState extends State<wether> {
         moist = Conditions();
         moist.icon = 'assets/drip.png';
         moist.name = 'Moisture';
-        moist.value =
-            '${double.parse(dataModelApi!.feeds![0].field3!).toInt()}';
+        moist.value = '60';
         moist.subText = 'No Irrigation Required';
         moist.color = '${darkBlueMoisture}';
         moist.subColor = '${normalText}';
@@ -345,8 +250,7 @@ class _wetherState extends State<wether> {
         moist = Conditions();
         moist.icon = 'assets/drip.png';
         moist.name = 'Moisture';
-        moist.value =
-            '${double.parse(dataModelApi!.feeds![0].field3!).toInt()}';
+        moist.value = '60';
         moist.subText = 'Irrigation to Be Applied';
         moist.color = '${darkBlueMoisture}';
         moist.subColor = '${moderateText}';
@@ -356,11 +260,10 @@ class _wetherState extends State<wether> {
         moist = Conditions();
         moist.icon = 'assets/drip.png';
         moist.name = 'Moisture';
-        moist.value =
-            '${double.parse(dataModelApi!.feeds![0].field3!).toInt()}';
-        moist.subText = 'Critically Low Soil Moisture';
+        moist.value = '80';
+        moist.subText = 'No Irrigation Required';
         moist.color = '${darkBlueMoisture}';
-        moist.subColor = '${highText}';
+        moist.subColor = '${normalText}';
         head = moist.subText;
         print(head);
         // if (firsttime) {

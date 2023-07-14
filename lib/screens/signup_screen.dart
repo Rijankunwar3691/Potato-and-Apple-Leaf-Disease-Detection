@@ -64,9 +64,9 @@ class _SignupScreenState extends State<SignupScreen> {
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
         Fluttertoast.showToast(
-          msg: "An email has been sent to your email address",
+          msg: "Succefully registered",
           toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.grey.shade600,
           textColor: Colors.white,
@@ -78,6 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
           'id': uid,
           'name': _fullNameController.text,
           'email': _emailTextController.text.toLowerCase(),
+          'password':_passTextController.text.toLowerCase()
         });
 
         Navigator.of(context)
