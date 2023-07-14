@@ -1,4 +1,7 @@
 import 'package:cropssafe/consts/constants.dart';
+import 'package:cropssafe/diseases/AppleBlackRot.dart';
+import 'package:cropssafe/diseases/AppleCedarRust.dart';
+import 'package:cropssafe/inner_screens/image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -186,22 +189,32 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   resultPage(BuildContext context, String name) {
-    if (name == "apple apple scab") {
+    if (name == "Apple___Apple_scab") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AppleScab()),
       );
-    } else if (name == "potato early blight") {
+    } else if (name == "Apple___Black_rot") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AppleBlack()),
+      );
+    } else if (name == "Apple___ Cedar_apple_rust") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AppleCedarRust()),
+      );
+    } else if (name == "Potato___Early_blight") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PotatoEarlyBlight()),
       );
-    } else if (name == "potato late blight") {
+    } else if (name == "Potat___Late_blight") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PotatoLateBlight()),
       );
-    } else if (name == "apple healthy" || name == "potato healthy") {
+    } else if (name == "Apple___healthy" || name == "Potato___healthy") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Healthy()),
