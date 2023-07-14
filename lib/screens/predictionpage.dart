@@ -1,7 +1,6 @@
 import 'package:cropssafe/consts/constants.dart';
 import 'package:cropssafe/diseases/AppleBlackRot.dart';
 import 'package:cropssafe/diseases/AppleCedarRust.dart';
-import 'package:cropssafe/inner_screens/image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,10 +12,11 @@ import '../diseases/PotatoLateBlight.dart';
 class PredictionPage extends StatefulWidget {
   final String predictionclass;
   final double confidence;
-
+  final String image;
   const PredictionPage({
     required this.predictionclass,
     required this.confidence,
+    required this.image,
   });
 
   @override
@@ -78,7 +78,7 @@ class _PredictionPageState extends State<PredictionPage> {
                               spreadRadius: 5.0)
                         ]),
                     child: Image.asset(
-                      'assets/16.jpg',
+                      widget.image,
                       fit: BoxFit.contain,
                     ),
                   )),

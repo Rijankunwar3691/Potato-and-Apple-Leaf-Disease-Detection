@@ -73,7 +73,7 @@ class _Home_pageState extends State<Home_page> {
           MaterialPageRoute(
             builder: (context) => PredictionPage(
               predictionclass: predictedClass,
-              confidence: confidence,
+              confidence: confidence,image: image.path
               
             ),
           ));
