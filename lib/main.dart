@@ -1,5 +1,6 @@
 import 'package:cropssafe/screens/login_screen.dart';
 import 'package:cropssafe/screens/signup_screen.dart';
+import 'package:cropssafe/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
                 // is not restarted.
                 primarySwatch: Colors.blue,
               ),
-              home: Home_page(),
+              home: Splashscreen(),
               routes: {
                 LoginScreen.id: (context) => const LoginScreen(),
                 SignupScreen.id: (context) => const SignupScreen(),

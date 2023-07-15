@@ -78,7 +78,7 @@ class _PredictionPageState extends State<PredictionPage> {
                               spreadRadius: 5.0)
                         ]),
                     child: Image.asset(
-                      widget.image,
+                      'assets/16.jpg',
                       fit: BoxFit.contain,
                     ),
                   )),
