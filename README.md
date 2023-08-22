@@ -1,5 +1,5 @@
 # cropssafe
-
+Note: Goto backend branch for updated code.
 Crop Safe is an android app made for farmers where they can detect potato and apple leaf diseases.
 It used technologies such as - flutter, python, machine learning and Deep Learning Algorithms( SVM and CNN ), firebase, FastAPI
 I got accuracy of 94% in CNN model and 78% in SVM model.
