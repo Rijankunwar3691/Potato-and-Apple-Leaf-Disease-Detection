@@ -78,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
           'id': uid,
           'name': _fullNameController.text,
           'email': _emailTextController.text.toLowerCase(),
-          'password':_passTextController.text.toLowerCase()
+          'password': _passTextController.text.toLowerCase()
         });
 
         Navigator.of(context)
@@ -154,7 +154,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                 cursorColor: kDarkGreenColor,
                                 controller: _fullNameController,
                                 validator: (value) {
-                                  if (value!.isEmpty) {
+                                  if (value!.isEmpty ||
+                                      !value.contains(RegExp(r'[A-Z]')) ||
+                                      value.contains(RegExp(r'[0-9]')) ||
+                                      !value.contains(RegExp(r'[a-z]')) ||
+                                      value.contains(
+                                          RegExp(r'[!@#$%^&*()_-]'))) {
                                     return "This Field is missing";
                                   } else {
                                     return null;
@@ -203,7 +208,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 controller: _emailTextController,
                                 validator: (value) {
-                                  if (value!.isEmpty || !value.contains("@")) {
+                                  if (value!.isEmpty ||
+                                      !value.contains("@") ||
+                                      !value.contains(RegExp(r'[0-9]'))) {
                                     return "Please enter a valid Email adress";
                                   } else {
                                     return null;
@@ -250,7 +257,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                 keyboardType: TextInputType.visiblePassword,
                                 controller: _passTextController,
                                 validator: (value) {
-                                  if (value!.isEmpty || value.length < 7) {
+                                  if (value!.isEmpty ||
+                                      value.length < 7 ||
+                                      !value.contains(RegExp(r'[0-9]')) ||
+                                      !value.contains(RegExp(r'[A-Z]'))) {
                                     return "Please enter a valid password";
                                   } else {
                                     return null;

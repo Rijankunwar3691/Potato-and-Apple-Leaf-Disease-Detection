@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../consts/global_methods.dart';
 import '../inner_screens/predictionbutton.dart';
 
 // ignore: camel_case_types
@@ -64,22 +65,30 @@ class _Home_pageState extends State<Home_page> {
       var responseBody = await response.stream.bytesToString();
       print(responseBody);
       var jsonResponse = json.decode(responseBody);
-
-      String predictedClass = jsonResponse['class'];
-      double confidence = jsonResponse['confidence'];
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PredictionPage(
-                predictionclass: predictedClass, confidence: confidence),
-          ));
-      _response = null; // Reset the response when a new image is selected
-      setState(() {
-        _response = 'Prediction: $predictedClass\nConfidence: $confidence';
-        print('Prediction: $predictedClass');
-        print('Confidence: $confidence');
-      });
+      print(jsonResponse['error']);
+      if (jsonResponse['error'] ==
+          'Please provide valid images of either potato or apple leaf') {
+        String error = jsonResponse['error'];
+        GlobalMethods.errorDialog(subtitle: '$error', context: context);
+      } else {
+        String predictedClass = jsonResponse['class'];
+        double confidence = jsonResponse['confidence'];
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PredictionPage(
+                predictionclass: predictedClass,
+                confidence: confidence * 100,
+              ),
+            ));
+        _response = null; // Reset the response when a new image is selected
+        setState(() {
+          _response = 'Prediction: $predictedClass\nConfidence: $confidence';
+          print('Prediction: $predictedClass');
+          print('Confidence: $confidence');
+        });
+      }
     } else {
       print('Image upload failed with status: ${response.statusCode}');
     }
@@ -89,6 +98,8 @@ class _Home_pageState extends State<Home_page> {
     if (_image != null) {
       sendImageToServer(_image!);
     } else {
+      GlobalMethods.errorDialog(
+          subtitle: 'No image selected', context: context);
       print('No image selected');
     }
   }
@@ -188,7 +199,7 @@ class _Home_pageState extends State<Home_page> {
           ),
           child: CustomScrollView(
             slivers: [
-              GreetingSection(size.height * 0.2),
+              GreetingSection(size.height * 0.17),
               TitleSection('Instructions', size.height * 0.066),
               InstructionsSection(size),
               ImageSection(

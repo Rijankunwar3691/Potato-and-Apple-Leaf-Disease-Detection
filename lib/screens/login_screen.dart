@@ -189,7 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onChanged: (value) => email = value,
                                   validator: (value) {
                                     if (value!.isEmpty ||
-                                        !value.contains('@')) {
+                                        !value.contains('@') ||
+                                        !value.contains(RegExp(r'[0-9]'))) {
                                       return 'Please enter a valid email address';
                                     } else {
                                       return null;
@@ -236,7 +237,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   keyboardType: TextInputType.visiblePassword,
                                   controller: _passTextController,
                                   validator: (value) {
-                                    if (value!.isEmpty || value.length < 7) {
+                                    if (value!.isEmpty ||
+                                        value.length < 7 ||
+                                        !value.contains(RegExp(r'[0-9]')) ||
+                                        !value.contains(RegExp(r'[A-Z]'))) {
                                       return "Please enter a valid password";
                                     } else {
                                       return null;
@@ -359,7 +363,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              GoogleButton(),
+                              // GoogleButton(),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: Row(

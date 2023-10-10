@@ -10,7 +10,7 @@ class ImageSection extends SliverFixedExtentList {
               (BuildContext context, index) {
                 return Center(
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 40),
+                      padding: const EdgeInsets.only(top: 20),
                       child: Container(
                         height: 300.0,
                         width: 300.0,
